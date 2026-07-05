@@ -54,94 +54,80 @@
     pointer-events: none;
     transform: translateY(-100%) scale(0.95);
   }
-  
-  /* مجسم الظرف */
+
+  /* مجسم الظرف: صورة كاملة داخل بطاقة بحواف مستديرة وغطاء ذهبي على شكل حرف V */
   .envelope-wrapper {
     position: relative;
     width: 380px;
     height: 260px;
+    border-radius: 14px;
+    overflow: hidden;
     background: var(--cream-deep);
-    border-radius: 0 0 12px 12px;
-    box-shadow: 0 20px 40px rgba(60,45,10,0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    box-shadow: 0 20px 45px rgba(60,45,10,0.28);
+    border: 1px solid rgba(169,138,75,0.35);
+    transition: transform 0.4s ease;
   }
   @media (max-width: 420px) {
-    .envelope-wrapper { width: 90vw; height: 60vw; }
+    .envelope-wrapper { width: 88vw; height: 60vw; min-height: 240px; }
   }
 
-  /* الغطاء العلوي للظرف */
-  .envelope-wrapper::before {
-    content: '';
+  /* الصورة تملأ الظرف بالكامل وتظهر فورًا */
+  .envelope-wrapper .envelope-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    background: var(--cream-deep);
+  }
+
+  /* الغطاء العلوي للظرف على شكل V فوق الصورة */
+  .envelope-wrapper .envelope-flap {
     position: absolute;
     top: 0; left: 0; right: 0;
-    border-left: 190px solid transparent;
-    border-right: 190px solid transparent;
-    border-top: 130px solid var(--gold);
-    transform-origin: top;
-    transition: transform 0.4s ease;
-    z-index: 3;
-  }
-  @media (max-width: 420px) {
-    .envelope-wrapper::before {
-      border-left-width: 45vw; border-right-width: 45vw; border-top-width: 30vw;
-    }
+    height: 62%;
+    background: linear-gradient(155deg, var(--gold) 0%, var(--gold-deep) 58%, rgba(199,171,114,0) 100%);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    z-index: 2;
+    transition: opacity 0.4s ease, transform 0.4s ease;
   }
 
-  /* فتح غطاء الظرف عند التمرير */
-  .envelope-wrapper:hover::before {
-    transform: rotateX(160deg);
-    border-top-color: var(--gold-deep);
+  .envelope-wrapper:hover .envelope-flap {
+    opacity: 0.85;
+    transform: translateY(-6px);
   }
 
-  /* الكارت الداخلي */
-  .envelope-card {
+  /* النص فوق الصورة */
+  .envelope-overlay {
     position: absolute;
-    background: var(--white);
-    width: 92%;
-    height: 90%;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: inset 0 0 10px rgba(169,138,75,0.05);
+    left: 0; right: 0;
+    bottom: 16%;
+    z-index: 3;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    gap: 10px;
     text-align: center;
-    z-index: 2;
-    transition: transform 0.4s ease;
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.45);
+    padding: 0 16px;
   }
-  
-  .envelope-wrapper:hover .envelope-card {
-    transform: translateY(-50px);
-  }
-
-  .envelope-card img {
-    width: 100%;
-    height: 60%;
-    object-fit: cover;
-    border-radius: 6px;
-    margin-bottom: 8px;
-    border: 1px solid var(--line);
-  }
-  .envelope-card h2 {
-    font-size: 1.4rem;
-    color: var(--gold-deep);
-    margin: 4px 0;
-  }
-  .envelope-card .tagline {
-    font-size: 0.75rem;
-    color: var(--ink-soft);
+  .envelope-overlay h2 {
+    font-size: 2rem;
+    letter-spacing: 4px;
+    margin: 0;
+    font-weight: 500;
+    color: #fff;
   }
 
   .click-hint {
-    margin-top: 25px;
-    font-size: 0.9rem;
-    color: var(--gold-deep);
-    letter-spacing: 1px;
-    animation: bounce 1.5s infinite;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
     font-weight: 600;
+    animation: bounce 1.5s infinite;
+    color: #fff;
   }
   @keyframes bounce {
     0%, 100% { transform: translateY(0); }
@@ -263,11 +249,13 @@
     padding:12px 14px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:1rem; background:var(--white);
   }
   .gb-form textarea{ min-height:90px; resize:vertical;}
-  .gb-list{ display:flex; flex-direction:column; gap:12px; max-width:480px; margin:0 auto; text-align:start;}
-  body.ar .gb-list { text-align: right; }
-  .gb-item{ background:var(--white); border:1px solid var(--line); border-radius:8px; padding:12px 16px; box-shadow:var(--shadow);}
+  
+  /* تم إبقاء استايل كروت الرسائل للوحة التحكم */
+  .gb-item{ background:var(--white); border:1px solid var(--line); border-radius:8px; padding:12px 16px; box-shadow:var(--shadow); position:relative;}
   .gb-item .name{ color:var(--gold-deep); font-weight:600; font-size:.9rem;}
   .gb-item .msg{ font-size:.95rem; margin-top:4px;}
+  .gb-item .del-btn{ position:absolute; top:12px; right:12px; background:#b03434; color:#fff; border:none; border-radius:4px; padding:2px 8px; cursor:pointer; font-size:0.75rem;}
+  body.ar .gb-item .del-btn { right: auto; left: 12px; }
 
   footer{ text-align:center; padding:30px; color:var(--ink-soft); font-size:.85rem; border-top:1px solid var(--line); background:var(--cream-deep);}
   .admin-tiny-link{ position:fixed; bottom:10px; inset-inline-start:10px; font-size:.7rem; color:var(--ink-soft); opacity:.45; z-index:50; }
@@ -283,13 +271,13 @@
 <!-- REAL ENVELOPE SPLASH SCREEN -->
 <div class="envelope-splash" id="envelopeSplash" onclick="openEnvelope()">
   <div class="envelope-wrapper">
-    <div class="envelope-card">
-      <img id="envelopeImage" src="" alt="Envelope Pic">
-      <div class="tagline" data-i18n="getting_married">We're getting married</div>
+    <img id="envelopeImage" class="envelope-photo" src="" alt="Envelope Pic" loading="eager" decoding="sync" fetchpriority="high">
+    <div class="envelope-flap"></div>
+    <div class="envelope-overlay">
       <h2><span data-i18n="name_kevin">Kevin</span><span> &amp; </span><span data-i18n="name_rogina">Rogina</span></h2>
+      <div class="click-hint" id="envelopeHint">Click to open invitation ✉</div>
     </div>
   </div>
-  <div class="click-hint" id="envelopeHint">Click to open invitation ✉</div>
 </div>
 
 <div class="drawer-overlay" id="drawerOverlay"></div>
@@ -401,7 +389,7 @@
     <textarea id="gbMessage" placeholder="Message" data-i18n-placeholder="message_ph" required></textarea>
     <button type="submit" class="btn" data-i18n="send_message">Send message</button>
   </form>
-  <div class="gb-list" id="gbList"></div>
+  <!-- تم إزالة ديف عرض الرسائل من هنا نهائياً بناءً على طلبك ليبقى القسم مخفياً عن العوام -->
 </section>
 
 <footer>
@@ -427,7 +415,17 @@
         <h2 style="margin:0; color:var(--gold-deep);">Admin Panel</h2>
         <button class="btn" id="adminCloseBtn2" style="border-color:var(--ink-soft); color:var(--ink-soft); padding:6px 16px;">Close</button>
       </div>
+      
       <hr style="border:none; border-top:1px solid var(--line); margin:18px 0;">
+      
+      <!-- قسم إدارة الرسائل المضاف حديثاً داخل لوحة التحكم ليعرض الرسائل للآدمين فقط -->
+      <h3 style="color:var(--ink); font-size:1.05rem; margin-top:10px; margin-bottom:12px;">Manage Guestbook Messages</h3>
+      <div id="adminGbList" style="display:flex; flex-direction:column; gap:12px; max-height:260px; overflow-y:auto; border:1px solid var(--line); padding:10px; border-radius:8px; background:var(--cream); margin-bottom:20px;">
+        <!-- الرسائل تظهر هنا ديناميكياً مع زر الحذف الخاص بكل رسالة -->
+      </div>
+
+      <hr style="border:none; border-top:1px solid var(--line); margin:18px 0;">
+
       <h3 style="color:var(--ink); font-size:1.05rem;">Envelope / Splash Screen</h3>
       <label style="font-size:.85rem; color:var(--ink-soft);">Envelope Image</label>
       <input id="f_envelopeImg" type="file" accept="image/*" style="width:100%; margin-bottom:12px;">
@@ -533,6 +531,20 @@ let playing = false;
 const musicBtn = document.getElementById("musicToggle");
 const audioEl = document.getElementById("bgMusic");
 
+/* عرض صورة الظرف فورًا من آخر نسخة محفوظة محليًا (إن وجدت) قبل وصول بيانات Firebase،
+   حتى لا تبقى الصورة فارغة أثناء انتظار الشبكة */
+(function fastEnvelopePaint(){
+  try {
+    const cached = localStorage.getItem('envelopeImgCache');
+    if (cached) {
+      DATA.envelopeImg = cached;
+      document.getElementById("envelopeImage").src = cached;
+      return;
+    }
+  } catch(e) {}
+  document.getElementById("envelopeImage").src = placeholderImg("Envelope Cover Image");
+})();
+
 dbRef.on('value', (snapshot) => {
   const serverData = snapshot.val();
   const oldMusic = DATA.music;
@@ -543,6 +555,12 @@ dbRef.on('value', (snapshot) => {
     audioEl.src = DATA.music;
     if(playing) { audioEl.play().catch(()=>{}); }
   }
+
+  if(DATA.envelopeImg){
+    document.getElementById("envelopeImage").src = DATA.envelopeImg;
+    try { localStorage.setItem('envelopeImgCache', DATA.envelopeImg); } catch(e) {}
+  }
+
   applyLang(currentLang);
 });
 
@@ -666,18 +684,40 @@ function tickCountdown(){
 }
 setInterval(tickCountdown, 1000);
 
+// تحديث وعرض الرسائل داخل لوحة التحكم فقط مع الحفاظ على الترتيب وحق الحذف
 gbRef.on('value', (snapshot) => {
-  const el = document.getElementById("gbList");
-  el.innerHTML = "";
+  const adminEl = document.getElementById("adminGbList");
+  adminEl.innerHTML = "";
+  
   const list = [];
-  snapshot.forEach(child => { list.push(child.val()); });
+  snapshot.forEach(child => { 
+    list.push({ key: child.key, val: child.val() }); 
+  });
+  
+  if(list.length === 0) {
+    adminEl.innerHTML = `<div style="text-align:center; color:var(--ink-soft); font-size:0.9rem; padding:10px;">No messages yet.</div>`;
+    return;
+  }
+
   list.reverse().forEach(item => {
     const div = document.createElement("div");
     div.className = "gb-item";
-    div.innerHTML = `<div class="name"></div><div class="msg"></div>`;
-    div.querySelector(".name").textContent = item.name;
-    div.querySelector(".msg").textContent = item.message;
-    el.appendChild(div);
+    div.innerHTML = `
+      <div class="name"></div>
+      <div class="msg"></div>
+      <button class="del-btn">Delete</button>
+    `;
+    div.querySelector(".name").textContent = item.val.name;
+    div.querySelector(".msg").textContent = item.val.message;
+    
+    // حدث حذف الرسالة من الـ Database فورا عند النقر
+    div.querySelector(".del-btn").addEventListener("click", () => {
+      if(confirm("Are you sure you want to delete this message?")) {
+        gbRef.child(item.key).remove();
+      }
+    });
+    
+    adminEl.appendChild(div);
   });
 });
 
@@ -688,6 +728,7 @@ document.getElementById("gbForm").addEventListener("submit", e=>{
   if(!name || !message) return;
   gbRef.push({name, message, ts:Date.now()});
   document.getElementById("gbForm").reset();
+  alert(currentLang === "ar" ? "تم إرسال بركتكم بنجاح! شكراً لكم." : "Your blessing has been sent! Thank you.");
 });
 
 const drawer = document.getElementById("drawer");
@@ -726,7 +767,7 @@ musicBtn.addEventListener("click", (e) => {
 function openEnvelope() {
   const splash = document.getElementById("envelopeSplash");
   splash.classList.add("fade-out");
-  setTimeout(() => { splash.style.display = "none"; }, 500); // إخفاء كلي لمنع أي تداخل مربعات
+  setTimeout(() => { splash.style.display = "none"; }, 500); 
   if (!playing) { playMusic(); }
 }
 
@@ -890,7 +931,6 @@ document.getElementById("adminChangePassBtn").addEventListener("click", ()=>{
 
 if(location.hash === "#admin"){ openAdmin(); }
 
-// التشغيل الافتراضي بالإنجليزية بناءً على طلبك
 applyLang("en");
 tickCountdown();
 </script>
