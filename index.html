@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kevin & Rogina — Wedding</title>
 
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -55,7 +54,6 @@
     transform: translateY(-100%) scale(0.95);
   }
 
-  /* مجسم الظرف: صورة كاملة داخل بطاقة بحواف مستديرة وغطاء ذهبي على شكل حرف V */
   .envelope-wrapper {
     position: relative;
     width: 380px;
@@ -71,7 +69,6 @@
     .envelope-wrapper { width: 88vw; height: 60vw; min-height: 240px; }
   }
 
-  /* الصورة تملأ الظرف بالكامل وتظهر فورًا */
   .envelope-wrapper .envelope-photo {
     position: absolute;
     inset: 0;
@@ -82,23 +79,22 @@
     background: var(--cream-deep);
   }
 
-  /* الغطاء العلوي للظرف على شكل V فوق الصورة */
+  /* جعل غطاء المثلث شفافاً باستخدام خلفية RGBA شبه شفافة */
   .envelope-wrapper .envelope-flap {
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 62%;
-    background: linear-gradient(155deg, var(--gold) 0%, var(--gold-deep) 58%, rgba(199,171,114,0) 100%);
+    background: linear-gradient(155deg, rgba(169,138,75,0.4) 0%, rgba(199,171,114,0.2) 58%, rgba(199,171,114,0) 100%);
     clip-path: polygon(0 0, 100% 0, 50% 100%);
     z-index: 2;
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: background 0.4s ease, transform 0.4s ease;
   }
 
   .envelope-wrapper:hover .envelope-flap {
-    opacity: 0.85;
+    background: linear-gradient(155deg, rgba(169,138,75,0.6) 0%, rgba(199,171,114,0.3) 58%, rgba(199,171,114,0) 100%);
     transform: translateY(-6px);
   }
 
-  /* النص فوق الصورة */
   .envelope-overlay {
     position: absolute;
     left: 0; right: 0;
@@ -110,7 +106,7 @@
     gap: 10px;
     text-align: center;
     color: #fff;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.45);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.65);
     padding: 0 16px;
   }
   .envelope-overlay h2 {
@@ -167,18 +163,28 @@
   .eyebrow{ letter-spacing:3px; color:var(--gold-deep); font-size:.8rem; text-transform:uppercase; }
   h2{ font-size:2rem; margin:6px 0 30px; color:var(--ink);}
 
-  /* ---------- Hero ---------- */
+  /* ---------- Hero Section (مع دعم الصورة الخلفية) ---------- */
   #home{
     min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
     position:relative; padding-top:90px;
-    background:
-      radial-gradient(circle at 20% 15%, rgba(169,138,75,0.10), transparent 45%),
-      radial-gradient(circle at 85% 80%, rgba(169,138,75,0.12), transparent 50%),
-      var(--cream);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: background-image 0.5s ease;
+  }
+  /* طبقة حماية داكنة اختيارية لجعل النص مقروءاً فوق الصورة الخلفية */
+  #home::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(248, 243, 234, 0.4); /* يمكن تغيير الدرجة لزيادة الشفافية أو التباين */
+    z-index: 1;
   }
   .hero-frame{
+    position: relative;
+    z-index: 2;
     border:1.5px solid var(--gold); border-radius:4px;
-    padding:50px 36px; background:var(--white); box-shadow:var(--shadow);
+    padding:50px 36px; background:rgba(255, 253, 248, 0.9); box-shadow:var(--shadow);
     max-width:520px; width:90%;
   }
   .hero-frame .tagline{ font-size:.95rem; color:var(--ink-soft); margin-bottom:14px; }
@@ -191,7 +197,7 @@
     transition:.25s;
   }
   .btn:hover{ background:var(--gold-deep); color:var(--white); }
-  .scroll-down{ margin-top:34px; font-size:1.4rem; color:var(--gold); animation:bob 2s infinite; }
+  .scroll-down{ position: relative; z-index: 2; margin-top:34px; font-size:1.4rem; color:var(--gold); animation:bob 2s infinite; }
   @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
 
   /* Music toggle */
@@ -250,7 +256,6 @@
   }
   .gb-form textarea{ min-height:90px; resize:vertical;}
   
-  /* تم إبقاء استايل كروت الرسائل للوحة التحكم */
   .gb-item{ background:var(--white); border:1px solid var(--line); border-radius:8px; padding:12px 16px; box-shadow:var(--shadow); position:relative;}
   .gb-item .name{ color:var(--gold-deep); font-weight:600; font-size:.9rem;}
   .gb-item .msg{ font-size:.95rem; margin-top:4px;}
@@ -268,13 +273,12 @@
 </head>
 <body>
 
-<!-- REAL ENVELOPE SPLASH SCREEN -->
 <div class="envelope-splash" id="envelopeSplash" onclick="openEnvelope()">
   <div class="envelope-wrapper">
     <img id="envelopeImage" class="envelope-photo" src="" alt="Envelope Pic" loading="eager" decoding="sync" fetchpriority="high">
     <div class="envelope-flap"></div>
     <div class="envelope-overlay">
-      <h2><span data-i18n="name_kevin">Kevin</span><span> &amp; </span><span data-i18n="name_rogina">Rogina</span></h2>
+      <h2><span data-i18n="name_kevin">Kevin</span><span> & </span><span data-i18n="name_rogina">Rogina</span></h2>
       <div class="click-hint" id="envelopeHint">Click to open invitation ✉</div>
     </div>
   </div>
@@ -292,7 +296,7 @@
 </nav>
 
 <div class="topbar">
-  <div class="logo">K &amp; R</div>
+  <div class="logo">K & R</div>
   <div class="topbar-actions">
     <button class="lang-btn" id="langToggle">AR</button>
     <button class="menu-btn" id="menuBtn">☰</button>
@@ -369,7 +373,7 @@
   <div class="eyebrow" data-i18n="video_eyebrow">Video</div>
   <h2 data-i18n="video_invitation">Video invitation</h2>
   <div class="video-frame">
-    <video id="inviteVideo" controls></video>
+    <video id="inviteVideo" controls playsinline></video>
   </div>
 </section>
 
@@ -389,7 +393,6 @@
     <textarea id="gbMessage" placeholder="Message" data-i18n-placeholder="message_ph" required></textarea>
     <button type="submit" class="btn" data-i18n="send_message">Send message</button>
   </form>
-  <!-- تم إزالة ديف عرض الرسائل من هنا نهائياً بناءً على طلبك ليبقى القسم مخفياً عن العوام -->
 </section>
 
 <footer>
@@ -398,7 +401,6 @@
 
 <a class="admin-tiny-link" href="#admin" id="adminLink">admin</a>
 
-<!-- ============ ADMIN PANEL ============ -->
 <div id="adminOverlay" style="display:none; position:fixed; inset:0; background:rgba(20,16,10,0.55); z-index:200; align-items:center; justify-content:center; padding:20px;">
   <div style="background:var(--white); max-width:560px; width:100%; max-height:90vh; overflow:auto; border-radius:14px; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,.3); font-family:Georgia,serif;">
     <div id="adminLoginView">
@@ -418,18 +420,21 @@
       
       <hr style="border:none; border-top:1px solid var(--line); margin:18px 0;">
       
-      <!-- قسم إدارة الرسائل المضاف حديثاً داخل لوحة التحكم ليعرض الرسائل للآدمين فقط -->
       <h3 style="color:var(--ink); font-size:1.05rem; margin-top:10px; margin-bottom:12px;">Manage Guestbook Messages</h3>
-      <div id="adminGbList" style="display:flex; flex-direction:column; gap:12px; max-height:260px; overflow-y:auto; border:1px solid var(--line); padding:10px; border-radius:8px; background:var(--cream); margin-bottom:20px;">
-        <!-- الرسائل تظهر هنا ديناميكياً مع زر الحذف الخاص بكل رسالة -->
-      </div>
+      <div id="adminGbList" style="display:flex; flex-direction:column; gap:12px; max-height:260px; overflow-y:auto; border:1px solid var(--line); padding:10px; border-radius:8px; background:var(--cream); margin-bottom:20px;"></div>
 
       <hr style="border:none; border-top:1px solid var(--line); margin:18px 0;">
 
-      <h3 style="color:var(--ink); font-size:1.05rem;">Envelope / Splash Screen</h3>
+      <h3 style="color:var(--ink); font-size:1.05rem;">Hero Section Background Image</h3>
+      <label style="font-size:.85rem; color:var(--ink-soft);">Upload Background Image</label>
+      <input id="f_heroBgImg" type="file" accept="image/*" style="width:100%; margin-bottom:12px;">
+      <img id="f_heroBgImgPreview" style="max-width:100%; max-height:120px; display:none; border-radius:6px; margin-bottom:8px;">
+
+      <h3 style="color:var(--ink); font-size:1.05rem; margin-top:20px;">Envelope / Splash Screen</h3>
       <label style="font-size:.85rem; color:var(--ink-soft);">Envelope Image</label>
       <input id="f_envelopeImg" type="file" accept="image/*" style="width:100%; margin-bottom:12px;">
       <img id="f_envelopeImgPreview" style="max-width:100%; max-height:120px; display:none; border-radius:6px; margin-bottom:8px;">
+
       <h3 style="color:var(--ink); font-size:1.05rem; margin-top:20px;">Couple &amp; Date</h3>
       <label style="font-size:.85rem; color:var(--ink-soft);">Groom name (AR)</label>
       <input id="f_groomAr" style="width:100%; margin-bottom:8px; padding:8px; border:1px solid var(--line); border-radius:6px;">
@@ -441,6 +446,7 @@
       <input id="f_brideEn" style="width:100%; margin-bottom:8px; padding:8px; border:1px solid var(--line); border-radius:6px;">
       <label style="font-size:.85rem; color:var(--ink-soft);">Wedding date &amp; time</label>
       <input id="f_datetime" type="datetime-local" style="width:100%; margin-bottom:8px; padding:8px; border:1px solid var(--line); border-radius:6px;">
+      
       <h3 style="color:var(--ink); font-size:1.05rem; margin-top:20px;">Venue / Location</h3>
       <label style="font-size:.85rem; color:var(--ink-soft);">Venue name (AR)</label>
       <input id="f_venueAr" style="width:100%; margin-bottom:8px; padding:8px; border:1px solid var(--line); border-radius:6px;">
@@ -451,18 +457,23 @@
       <label style="font-size:.85rem; color:var(--ink-soft);">Venue photo</label>
       <input id="f_venueImg" type="file" accept="image/*" style="width:100%; margin-bottom:12px;">
       <img id="f_venueImgPreview" style="max-width:100%; max-height:120px; display:none; border-radius:6px; margin-bottom:8px;">
+      
       <h3 style="color:var(--ink); font-size:1.05rem; margin-top:20px;">Wedding Invitation Image</h3>
       <input id="f_inviteImg" type="file" accept="image/*" style="width:100%; margin-bottom:8px;">
       <img id="f_inviteImgPreview" style="max-width:100%; max-height:120px; display:none; border-radius:6px; margin-bottom:8px;">
-      <h3 style="color:var(--ink); font-size:1.05rem; margin-top:20px;">Video Invitation</h3>
-      <input id="f_inviteVideo" type="file" accept="video/*" style="width:100%; margin-bottom:8px;">
+      
+      <h3 style="color:var(--ink); font-size:1.05rem; margin-top:20px;">Video Invitation (Direct MP4 Link)</h3>
+      <input id="f_inviteVideoUrl" placeholder="https://example.com/wedding-invite.mp4" style="width:100%; margin-bottom:8px; padding:8px; border:1px solid var(--line); border-radius:6px;">
       <div id="f_videoNote" style="font-size:.8rem; color:var(--ink-soft); margin-bottom:8px;"></div>
+      
       <h3 style="color:var(--ink); font-size:1.05rem; margin-top:20px;">Background Music (MP3 Link)</h3>
       <input id="f_musicUrl" placeholder="https://example.com/music.mp3" style="width:100%; margin-bottom:8px; padding:8px; border:1px solid var(--line); border-radius:6px;">
+      
       <h3 style="color:var(--ink); font-size:1.05rem; margin-top:20px;">Photoshoot Gallery</h3>
       <input id="f_galleryImgs" type="file" accept="image/*" multiple style="width:100%; margin-bottom:8px;">
       <div id="f_galleryPreview" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;"></div>
       <button class="btn" id="f_clearGallery" style="border-color:#b03434; color:#b03434; font-size:.8rem; padding:6px 14px;">Clear gallery</button>
+      
       <hr style="border:none; border-top:1px solid var(--line); margin:20px 0;">
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn" id="adminSaveBtn">Save changes</button>
@@ -519,7 +530,7 @@ const dbRef = firebase.database().ref('wedding_data');
 const gbRef = firebase.database().ref('guestbook');
 
 const DEFAULT_DATA = {
-  envelopeImg:"", groomAr:"كيفين", groomEn:"Kevin", brideAr:"روجينا", brideEn:"Rogina",
+  envelopeImg:"", heroBgImg:"", groomAr:"كيفين", groomEn:"Kevin", brideAr:"روجينا", brideEn:"Rogina",
   datetime:"2026-12-12T19:00", venueAr:"اسم الكنيسة / القاعة", venueEn:"Church / Venue name",
   mapsLink:"", venueImg:"", inviteImg:"", inviteVideo:"", music:"", gallery:[], password:"kevin&rogina2026"
 };
@@ -531,18 +542,19 @@ let playing = false;
 const musicBtn = document.getElementById("musicToggle");
 const audioEl = document.getElementById("bgMusic");
 
-/* عرض صورة الظرف فورًا من آخر نسخة محفوظة محليًا (إن وجدت) قبل وصول بيانات Firebase،
-   حتى لا تبقى الصورة فارغة أثناء انتظار الشبكة */
 (function fastEnvelopePaint(){
   try {
     const cached = localStorage.getItem('envelopeImgCache');
     if (cached) {
       DATA.envelopeImg = cached;
       document.getElementById("envelopeImage").src = cached;
-      return;
+    }
+    const cachedBg = localStorage.getItem('heroBgImgCache');
+    if (cachedBg) {
+      DATA.heroBgImg = cachedBg;
+      document.getElementById("home").style.backgroundImage = `url('${cachedBg}')`;
     }
   } catch(e) {}
-  document.getElementById("envelopeImage").src = placeholderImg("Envelope Cover Image");
 })();
 
 dbRef.on('value', (snapshot) => {
@@ -559,6 +571,13 @@ dbRef.on('value', (snapshot) => {
   if(DATA.envelopeImg){
     document.getElementById("envelopeImage").src = DATA.envelopeImg;
     try { localStorage.setItem('envelopeImgCache', DATA.envelopeImg); } catch(e) {}
+  }
+
+  if(DATA.heroBgImg){
+    document.getElementById("home").style.backgroundImage = `url('${DATA.heroBgImg}')`;
+    try { localStorage.setItem('heroBgImgCache', DATA.heroBgImg); } catch(e) {}
+  } else {
+    document.getElementById("home").style.backgroundImage = `radial-gradient(circle at 20% 15%, rgba(169,138,75,0.10), transparent 45%), radial-gradient(circle at 85% 80%, rgba(169,138,75,0.12), transparent 50%), linear-gradient(var(--cream), var(--cream))`;
   }
 
   applyLang(currentLang);
@@ -684,7 +703,6 @@ function tickCountdown(){
 }
 setInterval(tickCountdown, 1000);
 
-// تحديث وعرض الرسائل داخل لوحة التحكم فقط مع الحفاظ على الترتيب وحق الحذف
 gbRef.on('value', (snapshot) => {
   const adminEl = document.getElementById("adminGbList");
   adminEl.innerHTML = "";
@@ -710,7 +728,6 @@ gbRef.on('value', (snapshot) => {
     div.querySelector(".name").textContent = item.val.name;
     div.querySelector(".msg").textContent = item.val.message;
     
-    // حدث حذف الرسالة من الـ Database فورا عند النقر
     div.querySelector(".del-btn").addEventListener("click", () => {
       if(confirm("Are you sure you want to delete this message?")) {
         gbRef.child(item.key).remove();
@@ -820,6 +837,10 @@ function fillAdminForm(){
   document.getElementById("f_venueEn").value = DATA.venueEn;
   document.getElementById("f_mapsLink").value = DATA.mapsLink;
   document.getElementById("f_musicUrl").value = DATA.music || "";
+  document.getElementById("f_inviteVideoUrl").value = DATA.inviteVideo || "";
+
+  const heroBgPrev = document.getElementById("f_heroBgImgPreview");
+  if(DATA.heroBgImg){ heroBgPrev.src = DATA.heroBgImg; heroBgPrev.style.display = "block"; } else { heroBgPrev.style.display = "none"; }
 
   const envPrev = document.getElementById("f_envelopeImgPreview");
   if(DATA.envelopeImg){ envPrev.src = DATA.envelopeImg; envPrev.style.display = "block"; } else { envPrev.style.display = "none"; }
@@ -830,7 +851,7 @@ function fillAdminForm(){
   const invitePrev = document.getElementById("f_inviteImgPreview");
   if(DATA.inviteImg){ invitePrev.src = DATA.inviteImg; invitePrev.style.display = "block"; } else { invitePrev.style.display = "none"; }
 
-  document.getElementById("f_videoNote").textContent = DATA.inviteVideo ? "A video is currently set." : "No video set yet.";
+  document.getElementById("f_videoNote").textContent = DATA.inviteVideo ? "A video link is currently set." : "No video URL set yet.";
   renderGalleryPreview();
 }
 
@@ -863,6 +884,12 @@ function fileToDataUrl(file){
   });
 }
 
+document.getElementById("f_heroBgImg").addEventListener("change", async (e)=>{
+  const file = e.target.files[0]; if(!file) return;
+  DATA.heroBgImg = await fileToDataUrl(file);
+  document.getElementById("f_heroBgImgPreview").src = DATA.heroBgImg;
+  document.getElementById("f_heroBgImgPreview").style.display = "block";
+});
 document.getElementById("f_envelopeImg").addEventListener("change", async (e)=>{
   const file = e.target.files[0]; if(!file) return;
   DATA.envelopeImg = await fileToDataUrl(file);
@@ -880,11 +907,6 @@ document.getElementById("f_inviteImg").addEventListener("change", async (e)=>{
   DATA.inviteImg = await fileToDataUrl(file);
   document.getElementById("f_inviteImgPreview").src = DATA.inviteImg;
   document.getElementById("f_inviteImgPreview").style.display = "block";
-});
-document.getElementById("f_inviteVideo").addEventListener("change", async (e)=>{
-  const file = e.target.files[0]; if(!file) return;
-  DATA.inviteVideo = await fileToDataUrl(file);
-  document.getElementById("f_videoNote").textContent = "New video ready — click Save changes.";
 });
 document.getElementById("f_galleryImgs").addEventListener("change", async (e)=>{
   const files = Array.from(e.target.files);
@@ -910,6 +932,7 @@ document.getElementById("adminSaveBtn").addEventListener("click", ()=>{
   DATA.venueEn = document.getElementById("f_venueEn").value;
   DATA.mapsLink = document.getElementById("f_mapsLink").value;
   DATA.music = document.getElementById("f_musicUrl").value.trim();
+  DATA.inviteVideo = document.getElementById("f_inviteVideoUrl").value.trim();
 
   dbRef.set(DATA).then(()=>{
     const msg = document.getElementById("adminSavedMsg");
